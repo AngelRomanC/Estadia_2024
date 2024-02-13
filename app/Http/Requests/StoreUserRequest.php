@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreUserRequest extends FormRequest
 {
@@ -24,7 +25,10 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required']
+            'password' => ['required'],
+            //'agency_id' => 'required|exists:agencies,id',
+            'phone_number' => 'required|digits:10',
+            'percentage' => 'sometimes|numeric',
         ];
     }
     public function attributes(): array
@@ -32,7 +36,10 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => 'Nombre',
             'email' => 'Correo electrónico',
-            'password' => 'Contraseña'
+            'password' => 'Contraseña',
+            //'agency_id' => 'Agencia',
+            'phone_number' => 'Telefono',
+            'percentage' => 'Porcentaje',
         ];
     }
 }

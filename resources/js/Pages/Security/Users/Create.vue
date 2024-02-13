@@ -26,8 +26,11 @@ const props = defineProps({
     permisos: { type: Object, required: true },
     profiles: { type: Object, required: true },
 });
-const form = useForm({ name: '', email: '', password: '', profiles: [] });
-const guardar = () => {
+const form = useForm({ name: '', email: '', password: '', agency_id: '', phone_number: '', percentage: '', photo: '', profiles: [] });
+const saveForm = () => {
+    //cuando este la gestion de agencias conectarlo
+    form.agency_id = 1
+    form.photo = ''
     form.transform(data => ({
         ...data,
         profiles: data.profiles.map(p => p.id)
@@ -56,13 +59,13 @@ provide('profiles', props.profiles);
             </a>
         </SectionTitleLineWithButton>
         
-        <CardBox form @submit.prevent="guardar">
+        <CardBox form @submit.prevent="saveForm">
             <DataForm />
-    
+    {{ form }}
             <template #footer>
                 <BaseButtons>
                     <BaseButton :href="route(`${routeName}index`)" :icon="mdiClose" color="danger" label="Cancelar" />
-                    <BaseButton @click="guardar" :icon="mdiContentSave" type="submit" color="info" label="Guardar"/>
+                    <BaseButton @click="saveForm" :icon="mdiContentSave" type="submit" color="info" label="Guardar"/>
                 </BaseButtons>
             </template>
         </CardBox>

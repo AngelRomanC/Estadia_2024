@@ -65,8 +65,18 @@ export default {
         const isCheckedProfile = (profile) =>
             form.profiles.some((item) => profile.id === item.id);
 
+        const agencies = [
+            "Duque",
+            "CCR LOMAS",
+        ]
+
+        const percentages = [
+            1, 3, 4, 5, 6, 7, 8, 9, 10
+        ]
 
         return {
+            percentages,
+            agencies,
             form,
             // actions
             associateProfile,
@@ -80,8 +90,11 @@ export default {
 </script>
 
 <template>
+    <FormField label="Selecciona una agencia:" :required="true" :error="form.errors.agency_id">
+        <FormControl v-model="form.agency_id" :options="agencies" />
+    </FormField>
     <div class="md:flex md:space-x-4 mb-5">
-        <div class="md:w-1/2">
+        <div class="md:w-1/2 max-lg:mb-5">
             <FormField label="Nombre del usuario:" :required="true" :error="form.errors.name">
                 <FormControl v-model="form.name" placeholder="Nombre del usuario" />
             </FormField>
@@ -92,12 +105,22 @@ export default {
             </FormField>
         </div>
     </div>
-    <div class="mt-5 mb-5">
-        <FormField label="Contraseña:" :required="true" :error="form.errors.password">
-            <FormControl v-model="form.password" placeholder="Contraseña" />
-        </FormField>
+    <FormField label="Contraseña:" :required="true" :error="form.errors.password">
+        <FormControl v-model="form.password" placeholder="Contraseña" />
+    </FormField>
+    <div class="md:flex md:space-x-4 mb-5">
+        <div class="md:w-1/2">
+            <FormField label="Telefono:" :required="true" :error="form.errors.phone_number">
+                <FormControl v-model="form.phone_number" type="number" placeholder="Telefono" />
+            </FormField>
+        </div>
+        <div class="md:w-1/2">
+            <FormField label="Porcentaje:" :required="true" :error="form.errors.percentage">
+                <FormControl v-model="form.percentage" :options="percentages" />
+            </FormField>
+        </div>
     </div>
-    <table>
+    <table class="mb-5">
         <thead>
             <tr>
                 <th />
@@ -138,4 +161,9 @@ export default {
             </tr>
         </tbody>
     </table>
+    <FormField label="Foto de perfil:" :error="form.errors.photo"
+        help="Selecciona una foto de tus archivos JPG, PNG(MAX. 6M)">
+        <jet-input class="w-full border border-slate-800" aria-describedby="file_input_help" id="photo" type="file"
+            @input="form.photo = $event.target.files[0]" />
+    </FormField>
 </template>

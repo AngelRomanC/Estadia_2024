@@ -30,7 +30,7 @@ const props = defineProps({
 });
 
 const form = useForm({ ...props.module });
-const guardar = () => {
+const saveForm = () => {
     form.put(route("module.update", props.module.id));
 };
 const eliminar = () => {
@@ -64,7 +64,7 @@ const eliminar = () => {
             </a>
         </SectionTitleLineWithButton>
 
-        <CardBox form @submit.prevent="guardar">
+        <CardBox form @submit.prevent="saveForm">
             <FormField label="Nombre del módulo:" :required="true" help="Nombre del módulo" :error="form.errors.name">
                 <FormControl v-model="form.name" placeholder="Nombre del módulo" />
             </FormField>
@@ -80,7 +80,7 @@ const eliminar = () => {
             <template #footer>
                 <BaseButtons>
                     <BaseButton :href="route(`${routeName}index`)" color="" label="Cancelar" />
-                    <BaseButton @click="guardar" :icon="mdiContentSave" type="submit" color="info" label="Guardar"/>
+                    <BaseButton @click="saveForm" :icon="mdiContentSave" type="submit" color="info" label="Guardar"/>
                     <BaseButton color="danger" :icon="mdiTrashCan" @click="eliminar" label="Eliminar" />
                 </BaseButtons>
             </template>

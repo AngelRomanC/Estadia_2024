@@ -33,7 +33,7 @@ const form = useForm({
     guard_name: props.perfil.guard_name,
     permisos: [...props.perfil.permissions.map(p => ({ id: p.id, name: p.name }))],
 });
-const guardar = () => form.transform(data => ({ ...data, permisos: data.permisos.map(p => p.id) })).put(route('perfiles.update', props.perfil.id))
+const saveForm = () => form.transform(data => ({ ...data, permisos: data.permisos.map(p => p.id) })).put(route('perfiles.update', props.perfil.id))
 const eliminar = () => {
     Swal.fire({
         title: "¿Esta seguro?",
@@ -68,13 +68,13 @@ provide('modulos', props.modules);
                 </svg>
             </a>
         </SectionTitleLineWithButton>
-        <CardBox form @submit.prevent="guardar">
+        <CardBox form @submit.prevent="saveForm">
             <DataForm />
     
             <template #footer>
                 <BaseButtons>
                     <BaseButton :href="route(`${routeName}index`)" color="" label="Cancelar" />
-                    <BaseButton @click="guardar" :icon="mdiContentSave" type="submit" color="info" label="Guardar"/>
+                    <BaseButton @click="saveForm" :icon="mdiContentSave" type="submit" color="info" label="Guardar"/>
                     <BaseButton color="danger" :icon="mdiTrashCan" @click="eliminar" label="Eliminar" />
                 </BaseButtons>
             </template>

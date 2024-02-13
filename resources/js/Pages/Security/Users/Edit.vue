@@ -37,7 +37,7 @@ const form = useForm({
     deleted_at: props.record.delete_at
 });
 
-const guardar = () => {
+const saveForm = () => {
     form.transform(data => ({
         ...data,
         profiles: data.profiles.map(p => p.id),
@@ -80,13 +80,13 @@ provide('modules', props.modules);
             </a>
         </SectionTitleLineWithButton>
         
-        <CardBox form @submit.prevent="guardar">
+        <CardBox form @submit.prevent="saveForm">
             <DataFormEdit />
     
             <template #footer>
                 <BaseButtons>
                     <BaseButton :href="route(`${routeName}index`)" :icon="mdiClose" color="" label="Cancelar" />
-                    <BaseButton @click="guardar" :icon="mdiContentSave" type="submit" color="info" label="Guardar"/>
+                    <BaseButton @click="saveForm" :icon="mdiContentSave" type="submit" color="info" label="Guardar"/>
                     <BaseButton color="danger" :icon="mdiTrashCan" @click="eliminar" label="Eliminar" />
                 </BaseButtons>
             </template>

@@ -29,7 +29,7 @@ const props = defineProps({
     },
 });
 const form = useForm({ name: "", description: "", key: "", });
-const guardar = () => {
+const saveForm = () => {
     form.post(route("module.store"));
 };
 
@@ -49,7 +49,7 @@ const guardar = () => {
             </a>
         </SectionTitleLineWithButton>
 
-        <CardBox form @submit.prevent="guardar">
+        <CardBox form @submit.prevent="saveForm">
             <FormField label="Nombre del módulo:" :required="true" help="Nombre del módulo" :error="form.errors.name">
                 <FormControl v-model="form.name" placeholder="Nombre del módulo" />
             </FormField>
@@ -65,7 +65,7 @@ const guardar = () => {
             <template #footer>
                 <BaseButtons>
                     <BaseButton :href="route(`${routeName}index`)" :icon="mdiClose" color="danger" label="Cancelar" />
-                    <BaseButton @click="guardar" :icon="mdiContentSave" type="submit" color="info" label="Guardar" />
+                    <BaseButton @click="saveForm" :icon="mdiContentSave" type="submit" color="info" label="Guardar" />
                 </BaseButtons>
             </template>
         </CardBox>

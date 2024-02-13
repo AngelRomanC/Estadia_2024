@@ -32,7 +32,7 @@ const props = defineProps({
     },
 });
 const form = useForm({ name: '', guard_name: 'web', description: '', module_key: "" });
-const guardar = () => {
+const saveForm = () => {
     form.post(route(`${props.routeName}store`));
 };
 watchEffect(() => {
@@ -57,7 +57,7 @@ watchEffect(() => {
             </a>
         </SectionTitleLineWithButton>
 
-        <CardBox form @submit.prevent="guardar">
+        <CardBox form @submit.prevent="saveForm">
             <FormField label="Nombre del módulo:" :required="true" help="Selecciona un módulo disponible"
                 :error="form.errors.module_key">
                 <FormControl v-model="form.module_key" :options="modules" valueSelect="key" />
@@ -73,7 +73,7 @@ watchEffect(() => {
             <template #footer>
                 <BaseButtons>
                     <BaseButton :href="route(`${routeName}index`)" :icon="mdiClose" color="danger" label="Cancelar" />
-                    <BaseButton @click="guardar" :icon="mdiContentSave" type="submit" color="info" label="Guardar" />
+                    <BaseButton @click="saveForm" :icon="mdiContentSave" type="submit" color="info" label="Guardar" />
                 </BaseButtons>
             </template>
         </CardBox>

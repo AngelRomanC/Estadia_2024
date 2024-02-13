@@ -32,6 +32,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'agency_id',
+        'status',
+        'phone_number',
+        'percentage',
+        'photo'
     ];
 
     /**
@@ -98,4 +103,14 @@ class User extends Authenticatable
             return [$permission['name'] => true];
         });
     }
+
+    // public function agency()
+    // {
+    //     return $this->belongsTo(Agency::class);
+    // }
+
+    // public function users()
+    // {
+    //     return $this->hasMany(Agency::class);
+    // }
 }

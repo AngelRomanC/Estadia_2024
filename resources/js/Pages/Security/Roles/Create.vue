@@ -34,7 +34,7 @@ const props = defineProps({
     },
 });
 const form = useForm({ name: '', description: '', guard_name: 'web', permisos: [] });
-const guardar = () => form.transform(data => ({ ...data, permisos: data.permisos.map(p => p.id) })).post(route('perfiles.store'));
+const saveForm = () => form.transform(data => ({ ...data, permisos: data.permisos.map(p => p.id) })).post(route('perfiles.store'));
 provide('form', form);
 provide('permisos', props.permisos);
 provide('modulos', props.modulos);
@@ -55,13 +55,13 @@ provide('modulos', props.modulos);
             </a>
         </SectionTitleLineWithButton>
 
-        <CardBox form @submit.prevent="guardar">
+        <CardBox form @submit.prevent="saveForm">
             <DataForm />
     
             <template #footer>
                 <BaseButtons>
                     <BaseButton :href="route(`${routeName}index`)" :icon="mdiClose" color="danger" label="Cancelar" />
-                    <BaseButton @click="guardar" :icon="mdiContentSave" type="submit" color="info" label="Guardar"/>
+                    <BaseButton @click="saveForm" :icon="mdiContentSave" type="submit" color="info" label="Guardar"/>
                 </BaseButtons>
             </template>
         </CardBox>

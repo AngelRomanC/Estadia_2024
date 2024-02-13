@@ -17,10 +17,42 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         //creacion de usuarios
-        DB::table('users')->insert(['name' => 'Administrador', 'email' => 'admin@gmail.com', 'password' => Hash::make('12345678'),]);
-        DB::table('users')->insert(['name' => 'Javier Villagrán', 'email' => 'Javier@gmail.com', 'password' => Hash::make('12345678'),]);
-        DB::table('users')->insert(['name' => 'Jose Ortega', 'email' => 'Jose@gmail.com', 'password' => Hash::make('12345678'),]);
+        DB::table('users')->insert(
+            [
+                [
+                    'name'         => 'Administrador',
+                    'email'        => 'admin@gmail.com',
+                    'password'     => Hash::make('12345678'),
+                    //'agency_id'    => 1,
+                    'status'    => 'Activo',
+                    'phone_number' => '7774921441',
+                    //'percentage'   => '',
+                    //'photo'        => ''
+                ],
+                [
+                    'name'      => 'Javier Villagrán',
+                    'email'     => 'Javier@gmail.com',
+                    'password'  => Hash::make('12345678'),
+                    //'agency_id'    => 1,
+                    'status'    => 'Activo',
+                    'phone_number' => '7774921441',
+                    //'percentage'   => '',
+                    //'photo'        => ''
+                ],
+                [
+                    'name' => 'Jose Ortega',
+                    'email' => 'Jose@gmail.com',
+                    'password' => Hash::make('12345678'),
+                    //'agency_id'    => 1,
+                    'status'    => 'Activo',
+                    'phone_number' => '7774921441',
+                    //'percentage'   => '',
+                    //'photo'        => ''
+                ]
+            ],
 
+
+        );
         // Roles del sistema
         $admin = Role::create(['name' => 'Admin', 'description' => 'Administrador']);
         $promotor = Role::create(['name' => 'Promotor', 'description' => 'Promotor de agencia']);
@@ -29,6 +61,5 @@ class UserSeeder extends Seeder
         User::find(1)->assignRole($admin);
         User::find(2)->assignRole($promotor);
         User::find(3)->assignRole($agente);
-
     }
 }
