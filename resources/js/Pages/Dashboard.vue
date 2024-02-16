@@ -58,74 +58,33 @@ const props = defineProps({
   <Head title="Dashboard" />
   <LayoutAuthenticated>
     <SectionMain>
-      <SectionTitleLineWithButton
-        :icon="mdiChartTimelineVariant"
-        title="Descripción general"
-        main
-      >
+      <SectionTitleLineWithButton :icon="mdiChartTimelineVariant" title="Descripción general" main>
       </SectionTitleLineWithButton>
 
       <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
-        <CardBoxWidget
-          trend="12%"
-          trend-type="up"
-          color="text-emerald-500"
-          :icon="mdiAccountMultiple"
-          :number="Object.keys(users).length"
-          
-          label="Usuarios"
-        />
-        <CardBoxWidget
-          trend="12%"
-          trend-type="down"
-          color="text-blue-500"
-          :icon="mdiCartOutline"
-          :number="7770"
-          prefix="$"
-          label="Sales"
-        />
-        <CardBoxWidget
-          trend="Overflow"
-          trend-type="alert"
-          color="text-red-500"
-          :icon="mdiViewModule"
-          :number="Object.keys(modulos).length"
-          label="Módulos en el sistema"
-        />
+        <CardBoxWidget trend="12%" trend-type="up" color="text-emerald-500" :icon="mdiAccountMultiple"
+          :number="Object.keys(users).length" label="Usuarios" />
+        <CardBoxWidget trend="12%" trend-type="down" color="text-blue-500" :icon="mdiCartOutline" :number="7770"
+          prefix="$" label="Sales" />
+        <CardBoxWidget trend="Overflow" trend-type="alert" color="text-red-500" :icon="mdiViewModule"
+          :number="Object.keys(modulos).length" label="Módulos en el sistema" />
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <div class="flex flex-col justify-between">
-          <CardBoxTransaction
-            v-for="(transaction, index) in transactionBarItems"
-            :key="index"
-            :amount="transaction.amount"
-            :date="transaction.date"
-            :business="transaction.business"
-            :type="transaction.type"
-            :name="transaction.name"
-            :account="transaction.account"
-          />
+          <CardBoxTransaction v-for="(transaction, index) in transactionBarItems" :key="index"
+            :amount="transaction.amount" :date="transaction.date" :business="transaction.business"
+            :type="transaction.type" :name="transaction.name" :account="transaction.account" />
         </div>
         <div class="flex flex-col justify-between">
-          <CardBoxClient
-            v-for="client in clientBarItems"
-            :key="client.id"
-            :name="client.name"
-            :login="client.login"
-            :date="client.created"
-            :progress="client.progress"
-          />
+          <CardBoxClient v-for="client in clientBarItems" :key="client.id" :name="client.name" :login="client.login"
+            :date="client.created" :progress="client.progress" />
         </div>
       </div>
 
-
+      <BaseButton @click="avatar()" label="olaaaaaa" />
       <SectionTitleLineWithButton :icon="mdiChartPie" title="Trends overview">
-        <BaseButton
-          :icon="mdiReload"
-          color="whiteDark"
-          @click="fillChartData"
-        />
+        <BaseButton :icon="mdiReload" color="whiteDark" @click="fillChartData" />
       </SectionTitleLineWithButton>
 
       <CardBox class="mb-6">

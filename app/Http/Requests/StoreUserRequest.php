@@ -27,8 +27,10 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required'],
             //'agency_id' => 'required|exists:agencies,id',
+            'agency_id' => 'required',
+            'status'      => 'required',
             'phone_number' => 'required|digits:10',
-            'percentage' => 'sometimes|numeric',
+            'percentage'   => 'max:255',
         ];
     }
     public function attributes(): array
@@ -37,7 +39,8 @@ class StoreUserRequest extends FormRequest
             'name' => 'Nombre',
             'email' => 'Correo electrónico',
             'password' => 'Contraseña',
-            //'agency_id' => 'Agencia',
+            'agency_id' => 'Agencia',
+            'status' => 'Estado',
             'phone_number' => 'Telefono',
             'percentage' => 'Porcentaje',
         ];

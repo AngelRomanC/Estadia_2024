@@ -75,4 +75,9 @@ export default [
   {
     isDivider: true,
   },
+  {
+    href: "/agency",
+    label: "Agencias",
+    icon: mdiAccountCircle,
+  },
 ];

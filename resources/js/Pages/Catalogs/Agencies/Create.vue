@@ -14,35 +14,26 @@ import JetInput from "@/Components/Input.vue";
 import JetInputError from "@/Components/InputError.vue";
 import JetButton from "@/Components/Button.vue";
 import { useForm } from "@inertiajs/vue3";
-
-import { provide, watchEffect } from "@vue/runtime-core";
-import DataForm from "./DataForm.vue";
+import FormField from "@/Components/FormField.vue";
+import FormControl from "@/Components/FormControl.vue";
 
 const props = defineProps({
     name: 'Create',
-    title: { type: String, required: true },
-    routeName: { type: String, required: true },
-    modulos: { type: Object, required: true },
-    permisos: { type: Object, required: true },
-    profiles: { type: Object, required: true },
+    title: {
+        type: String,
+        required: true
+    },
+    routeName: {
+        type: String,
+        required: true
+    },
 });
-
-const form = useForm({ name: '', email: '', password: '', agency_id: null, status: 'Activo', phone_number: '', percentage: null, photo: '', profiles: [] });
-
+const form = useForm({ name: "", description: "" });
 const saveForm = () => {
-    //cuando este la gestion de agencias conectarlo
-    form.agency_id = 1    
-    form.transform(data => ({
-        ...data,
-        profiles: data.profiles.map(p => p.id)
-    }
-    )).post(route('user.store'), {
-        onError: () => saveStatus.value = 3,
-    });
+    form.post(route("agency.store"));
 };
 
-provide('form', form);
-provide('profiles', props.profiles);
+
 </script>
 
 <template>
@@ -57,13 +48,20 @@ provide('profiles', props.profiles);
                 </svg>
             </a>
         </SectionTitleLineWithButton>
-        
+
         <CardBox form @submit.prevent="saveForm">
-            <DataForm />
+            <FormField label="Nombre:" :required="true" help="Ingresa el nombre de la agencia" :error="form.errors.name">
+                <FormControl v-model="form.name" placeholder="Nombre" />
+            </FormField>
+
+            <FormField label="Descripción:" :required="true" help="" :error="form.errors.description">
+                <FormControl type="textarea" v-model="form.description" placeholder="Descripción" />
+            </FormField>
+
             <template #footer>
                 <BaseButtons>
                     <BaseButton :href="route(`${routeName}index`)" :icon="mdiClose" color="danger" label="Cancelar" />
-                    <BaseButton @click="saveForm" :icon="mdiContentSave" type="submit" color="info" label="Guardar"/>
+                    <BaseButton @click="saveForm" :icon="mdiContentSave" type="submit" color="info" label="Guardar" />
                 </BaseButtons>
             </template>
         </CardBox>

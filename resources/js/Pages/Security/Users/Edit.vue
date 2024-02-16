@@ -18,6 +18,7 @@ import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import { provide, watchEffect } from "@vue/runtime-core";
 import DataFormEdit from "./DataFormEdit.vue";
+import axios from 'axios'
 
 const props = defineProps({
     name: 'Edit',
@@ -32,18 +33,74 @@ const form = useForm({
     id: props.record.id,
     name: props.record.name,
     email: props.record.email,
+    agency_id: props.record.agency_id,
+    status: props.record.status,
+    phone_number: props.record.phone_number,
+    percentage: props.record.percentage,
+    photo: props.record.photo,
+
     profiles: [...props.record.roles.map(p => ({ id: p.id, name: p.name }))],
     permissions: [...props.record.permissions.map(p => ({ id: p.id, name: p.name }))],
     deleted_at: props.record.delete_at
 });
 
+const formPhoto = useForm({ photo: '' });
+
 const saveForm = () => {
-    form.transform(data => ({
-        ...data,
-        profiles: data.profiles.map(p => p.id),
-        permissions: data.permissions.map(p => p.id),
-    })).put(route('user.update', props.record.id))
+    
+    // se va cambiar cuando este la gestion de agencias
+    form.agency_id = 1
+    if (formPhoto.photo != '') {
+        editPhoto()
+    } else {
+        console.log('Sin foto')
+        form.transform(data => ({
+            ...data,
+            profiles: data.profiles.map(p => p.id),
+            permissions: data.permissions.map(p => p.id),
+        })).put(route('user.update', props.record.id))
+    }
+
 };
+
+const editPhoto = () => {
+    const formData = new FormData();
+    formData.append('photo', formPhoto.photo);
+    axios.post(route('user.editPhoto'), formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        }
+    })
+        .then(response => {
+            if (response.status === 200) {
+                if (response.data[0] != 'null') {
+                    form.photo = response.data[0]
+                }
+                console.log(form.photo)
+
+                form.transform(data => ({
+                    ...data,
+                    profiles: data.profiles.map(p => p.id),
+                    permissions: data.permissions.map(p => p.id),
+                })).put(route('user.update', props.record.id))
+            }
+        })
+        .catch(error => {
+            if (error.response.status === 500) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Se produjo un error al guardar el archivo.',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok',
+                });
+            } else if (error.response.status === 422) {
+                formPhoto.photo = '';
+                formPhoto.errors.photo = error.response.data.errors.photo[0];
+            }
+        });
+    return;
+}
 
 const eliminar = () => {
     Swal.fire({
@@ -60,6 +117,7 @@ const eliminar = () => {
 };
 
 provide('form', form);
+provide('formPhoto', formPhoto);
 provide('profiles', props.profiles);
 provide('permissions', props.permissions);
 provide('destroy', eliminar);
@@ -79,14 +137,13 @@ provide('modules', props.modules);
                 </svg>
             </a>
         </SectionTitleLineWithButton>
-        
         <CardBox form @submit.prevent="saveForm">
             <DataFormEdit />
-    
+
             <template #footer>
                 <BaseButtons>
                     <BaseButton :href="route(`${routeName}index`)" :icon="mdiClose" color="" label="Cancelar" />
-                    <BaseButton @click="saveForm" :icon="mdiContentSave" type="submit" color="info" label="Guardar"/>
+                    <BaseButton @click="saveForm" :icon="mdiContentSave" type="submit" color="info" label="Guardar" />
                     <BaseButton color="danger" :icon="mdiTrashCan" @click="eliminar" label="Eliminar" />
                 </BaseButtons>
             </template>

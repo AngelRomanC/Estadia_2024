@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\ModuloController;
 use App\Http\Controllers\PerfilesController;
@@ -48,6 +49,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('permissions', PermissionController::class)->names('permissions');
     Route::resource('perfiles', PerfilesController::class)->parameters(['perfiles' => 'perfiles']);
     Route::resource('user', UserController::class)->parameters(['user' => 'user']);
+
+    Route::post('user/editPhoto', [UserController::class, 'editPhoto'])->name('user.editPhoto');
+
+    // Catalogos
+    Route::resource('agency', AgencyController::class)->parameters(['agency' => 'agency']);
+
 
 });
 

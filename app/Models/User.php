@@ -104,13 +104,8 @@ class User extends Authenticatable
         });
     }
 
-    // public function agency()
-    // {
-    //     return $this->belongsTo(Agency::class);
-    // }
-
-    // public function users()
-    // {
-    //     return $this->hasMany(Agency::class);
-    // }
+    public function agency()
+    {
+        return $this->belongsTo(Agency::class);
+    }
 }

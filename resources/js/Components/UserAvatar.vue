@@ -18,8 +18,7 @@ const props = defineProps({
 
 const avatar = computed(
   () =>
-    props.avatar ??
-    `https://avatars.dicebear.com/api/${props.api}/${props.username.replace(
+    props.avatar ?? `https://avatars.dicebear.com/api/${props.api}/${props.username.replace(
       /[^a-z0-9]+/i,
       "-"
     )}.svg`
@@ -30,11 +29,8 @@ const username = computed(() => props.username);
 
 <template>
   <div>
-    <img
-      :src="avatar"
-      :alt="username"
-      class="rounded-full block h-auto w-full max-w-full bg-gray-100 dark:bg-slate-800"
-    />
+    <img :src="'/storage/photos/' + ($page.props.auth.user.photo ?? 'avatar.png')" :alt="username"
+      class="rounded-full block h-auto w-full max-w-full bg-gray-100 dark:bg-slate-800" />
     <slot />
   </div>
 </template>

@@ -24,15 +24,27 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('Users')->ignore($this->id)]
-
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('Users')->ignore($this->id)],
+            //'agency_id' => 'required|exists:agencies,id',
+            'agency_id' => 'required',
+            'status'      => 'required',
+            'phone_number' => 'required|digits:10',
+            'percentage'   => 'max:255',
+            'photo'        => 'sometimes|max:255'
         ];
     }
     public function attributes(): array
     {
         return [
             'name' => 'Nombre',
-            'email' => 'Correo electrónico'
+            'email' => 'Correo electrónico',
+            'password' => 'Contraseña',
+            'agency_id' => 'Agencia',
+            'status' => 'Estado',
+            'phone_number' => 'Telefono',
+            'percentage' => 'Porcentaje',
+            'photo'     => 'Foto'
         ];
     }
+    
 }

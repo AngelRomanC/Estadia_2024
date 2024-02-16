@@ -2,28 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Module;
-use App\Http\Requests\StoreModuleRequest;
-use App\Http\Requests\UpdateModuleRequest;
+use App\Models\Agency;
+use App\Http\Requests\StoreAgencyRequest;
+use App\Http\Requests\UpdateAgencyRequest;
 
 use Illuminate\Http\Request;
 use Inertia\Response;
 use Inertia\Inertia;
-use Illuminate\Http\RedirectResponse;
 
-class ModuleController extends Controller
+class AgencyController extends Controller
 {
-    private Module $model;
+    private Agency $model;
     private string $source;
     private string $routeName;
-    private string $module = 'module';
+    private string $module = 'agency';
 
     public function __construct()
     {
         $this->middleware('auth');
-        $this->source = 'Security/Modules/';
-        $this->model = new Module();
-        $this->routeName = 'module.';
+        $this->source = 'Catalogs/Agencies/';
+        $this->model = new Agency();
+        $this->routeName = 'agency.';
 
         $this->middleware("permission:{$this->module}.index")->only(['index', 'show']);
         $this->middleware("permission:{$this->module}.store")->only(['store', 'create']);
@@ -31,24 +30,22 @@ class ModuleController extends Controller
         $this->middleware("permission:{$this->module}.delete")->only(['destroy', 'edit']);
     
     }
-
-
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): Response
     {
-        $records = $this->model;
+        $records = Agency::with('users');
         $records = $records->when($request->search, function ($query, $search) {
             if ($search != '') {
                 $query->where('name', 'LIKE', '%' . $search . '%')
                     ->orWhere('description', 'LIKE', '%' . $search . '%');
             }
-        })->paginate(5)->withQueryString();
+        })->paginate(5);
 
         return Inertia::render("{$this->source}Index", [
-            'modules'        =>  $records,
-            'title'          => 'Gestión de Módulos',
+            'agencies'        =>  $records,
+            'title'          => 'Gestión de Agencias',
             'routeName'      => $this->routeName,
             'loadingResults' => false,
             'search'         => $request->search ?? '',
@@ -61,7 +58,7 @@ class ModuleController extends Controller
     public function create()
     {
         return Inertia::render("{$this->source}Create", [
-            'title'          => 'Agregar Módulos',
+            'title'          => 'Agregar Agencia',
             'routeName'      => $this->routeName
         ]);
     }
@@ -69,47 +66,47 @@ class ModuleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreModuleRequest $request)
+    public function store(StoreAgencyRequest $request)
     {
-        Module::create($request->validated());
-        return redirect()->route('module.index')->with('success', 'Módulo creado con éxito!');
+        Agency::create($request->validated());
+        return redirect()->route("{$this->routeName}index")->with('success', 'Agencia creada con éxito!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Module $module)
+    public function show(Agency $agency)
     {
-        abort(405);
+        abort(404);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Module $module)
+    public function edit(Agency $agency)
     {
         return Inertia::render("{$this->source}Edit", [
-            'title'          => 'Editar Módulos',
-            'routeName'      => $this->routeName,
-            'module' => $module
+            'title'          => 'Editar Agencia',
+            'agency'        => $agency,
+            'routeName'      => $this->routeName
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateModuleRequest $request, Module $module)
+    public function update(UpdateAgencyRequest $request, Agency $agency)
     {
-        $module->update($request->validated());
-        return redirect()->route('module.index')->with('success', 'Módulo modificado correctamente!');
+        $agency->update($request->validated());
+        return redirect()->route("{$this->routeName}index")->with('success', 'Agencia modificada correctamente!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Module $module)
+    public function destroy(Agency $agency)
     {
-        $module->delete();
-        return redirect()->route('module.index')->with('success', 'Módulo eliminado con éxito');
+        $agency->delete();
+        return redirect()->route("{$this->routeName}index")->with('success', 'Agencia eliminada con éxito');
     }
 }

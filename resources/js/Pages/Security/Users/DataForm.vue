@@ -69,10 +69,9 @@ export default {
             "Duque",
             "CCR LOMAS",
         ]
+        
+        const percentages = [ 1, 3, 4, 5, 6, 7, 8, 9, 10]
 
-        const percentages = [
-            1, 3, 4, 5, 6, 7, 8, 9, 10
-        ]
 
         return {
             percentages,
@@ -115,7 +114,7 @@ export default {
             </FormField>
         </div>
         <div class="md:w-1/2">
-            <FormField label="Porcentaje:" :required="true" :error="form.errors.percentage">
+            <FormField label="Porcentaje:" :error="form.errors.percentage">
                 <FormControl v-model="form.percentage" :options="percentages" />
             </FormField>
         </div>

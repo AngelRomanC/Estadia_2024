@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ImageRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class UserController extends Controller
     protected string $source;
     protected string $module = 'user';
     protected User $model;
-
+    private string $storage_path = 'public/photos';
     public function __construct()
     {
         $this->routeName = "user.";
@@ -47,13 +48,12 @@ class UserController extends Controller
 
         return Inertia::render("{$this->source}Index", [
             'title'   => 'Gestión de Usuarios',
-            'users' =>$users,
+            'users' => $users,
             'profiles' => Role::get(['id', 'name']),
-            'routeName'=> $this->routeName,
+            'routeName' => $this->routeName,
             'loadingResults' => false,
-            'filtro' => $request->all('search','profile'),
+            'filtro' => $request->all('search', 'profile'),
         ]);
-
     }
 
     /**
@@ -62,12 +62,12 @@ class UserController extends Controller
     public function create()
     {
         return Inertia::render("{$this->source}Create", [
-            'title'=> 'Agregar Usuarios',
-            'routeName'=> $this->routeName,
-            'profiles'=> Role::with('permissions:id,name,description,module_key')->orderBy('name')->select('id', 'name', 'description')->get(),
-            'permisos'=> Permission::get(['id', 'name', 'description', 'module_key'])->groupBy('module_key')->toArray(),
-            'modulos'=> Module::orderBy('key')->get(['id', 'name', 'description', 'key'])
-        ]);  
+            'title' => 'Agregar Usuarios',
+            'routeName' => $this->routeName,
+            'profiles' => Role::with('permissions:id,name,description,module_key')->orderBy('name')->select('id', 'name', 'description')->get(),
+            'permisos' => Permission::get(['id', 'name', 'description', 'module_key'])->groupBy('module_key')->toArray(),
+            'modulos' => Module::orderBy('key')->get(['id', 'name', 'description', 'key'])
+        ]);
     }
 
     /**
@@ -75,7 +75,16 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $fields= $request->validated();
+        $fields = $request->validated();
+        if ($request->hasFile('photo')) {
+            $request->validate([
+                'photo' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+            ]);
+            $fileStorage = $request->file('photo');
+            $fileName = $fileStorage->getClientOriginalName();
+            $fileStorage->storeAs($this->storage_path, $fileName);
+            $fields['photo'] = $fileName;
+        }
         $fields['password'] = Hash::make($fields['password']);
         $user = $this->model::create($fields);
         $roles = Role::whereIn('id', $request->profiles)->get();
@@ -99,7 +108,7 @@ class UserController extends Controller
         return Inertia::render("{$this->source}Edit", [
             'title'    => 'Editar Usuarios.',
             'routeName' => $this->routeName,
-            'record' => $user->load('roles:id,name','permissions:id,name'),
+            'record' => $user->load('roles:id,name', 'permissions:id,name'),
             'profiles' => Role::with('permissions:id,name,description,module_key')->orderBy('name')->select('id', 'name', 'description')->get(),
             'permissions' => Permission::get(['id', 'name', 'description', 'module_key'])->groupBy('module_key')->toArray(),
             'modules' => Module::orderBy('key')->get(['id', 'name', 'description', 'key'])
@@ -124,5 +133,14 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('user.index')->with('success', 'Usuario eliminado con éxito');
+    }
+
+    public function editPhoto(ImageRequest $request)
+    {
+        $fileStorage = $request->file('photo');
+        $fileName = $fileStorage->getClientOriginalName();
+        $fileStorage->storeAs($this->storage_path, $fileName);
+
+        return response([$fileName], 200);
     }
 }

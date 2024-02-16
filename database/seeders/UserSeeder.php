@@ -16,38 +16,34 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        //creacion de usuarios
         DB::table('users')->insert(
             [
                 [
                     'name'         => 'Administrador',
                     'email'        => 'admin@gmail.com',
                     'password'     => Hash::make('12345678'),
-                    //'agency_id'    => 1,
+                    'agency_id'    => 1,
                     'status'    => 'Activo',
                     'phone_number' => '7774921441',
-                    //'percentage'   => '',
-                    //'photo'        => ''
+                    
                 ],
                 [
                     'name'      => 'Javier Villagrán',
                     'email'     => 'Javier@gmail.com',
                     'password'  => Hash::make('12345678'),
-                    //'agency_id'    => 1,
+                    'agency_id' => 2,
                     'status'    => 'Activo',
                     'phone_number' => '7774921441',
-                    //'percentage'   => '',
-                    //'photo'        => ''
+                   
                 ],
                 [
                     'name' => 'Jose Ortega',
                     'email' => 'Jose@gmail.com',
                     'password' => Hash::make('12345678'),
-                    //'agency_id'    => 1,
+                    'agency_id'    => 2,
                     'status'    => 'Activo',
                     'phone_number' => '7774921441',
-                    //'percentage'   => '',
-                    //'photo'        => ''
+                   
                 ]
             ],
 

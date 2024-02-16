@@ -18,8 +18,9 @@ import Pagination from "@/Shared/Pagination.vue";
 import JetDangerButton from "@/Components/DangerButton.vue";
 
 import { useForm } from "@inertiajs/vue3";
-
 import { computed, inject, reactive, ref, toRefs } from "vue";
+import FormField from "@/components/FormField.vue";
+import FormControl from "@/components/FormControl.vue";
 
 export default {
     name: "DataFormEdit",
@@ -32,9 +33,12 @@ export default {
         JetButton,
         JetDangerButton,
         Button,
+        FormField,
+        FormControl,
     },
     setup() {
         const form = inject("form");
+        const formPhoto = inject("formPhoto");
         const profiles = inject("profiles");
 
         const isChecked = (permission) =>
@@ -61,9 +65,18 @@ export default {
         const isCheckedProfile = (profile) =>
             form.profiles.some((item) => profile.id === item.id);
 
+        const agencies = [
+            "Duque",
+            "CCR LOMAS",
+        ]
+
+        const percentages = [ 1, 3, 4, 5, 6, 7, 8, 9, 10]
 
         return {
+            agencies,
+            percentages,
             form,
+            formPhoto,
             // actions
             associateProfile,
             isCheckedProfile,
@@ -76,30 +89,34 @@ export default {
 </script>
 
 <template>
+    <FormField label="Selecciona una agencia:" :required="true" :error="form.errors.agency_id">
+        <FormControl v-model="form.agency_id" :options="agencies" />
+    </FormField>
+    <div class="md:flex md:space-x-4 mb-5">
+        <div class="md:w-1/2 max-lg:mb-5">
+            <FormField label="Nombre del usuario:" :required="true" :error="form.errors.name">
+                <FormControl v-model="form.name" placeholder="Nombre del usuario" />
+            </FormField>
+        </div>
+        <div class="md:w-1/2">
+            <FormField label="Correo Electrónico:" :required="true" :error="form.errors.email">
+                <FormControl v-model="form.email" type="email" placeholder="Correo Electrónico" />
+            </FormField>
+        </div>
+    </div>
     <div class="md:flex md:space-x-4 mb-5">
         <div class="md:w-1/2">
-            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                <span class="text-red-600 mr-1">*</span>Nombre del usuario
-            </label>
-            <jet-input id="name"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                v-model="form.name" :class="{ 'is-invalid': form.errors.name }" required placeholder="Nombre del usuario" />
-            <jet-input-error :message="form.errors.name" />
+            <FormField label="Telefono:" :required="true" :error="form.errors.phone_number">
+                <FormControl v-model="form.phone_number" type="number" placeholder="Telefono" />
+            </FormField>
         </div>
         <div class="md:w-1/2">
-            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                <span class="text-red-600 mr-1">*</span>Correo Electrónico
-            </label>
-            <jet-input id="email"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                v-model="form.email" :class="{ 'is-invalid': form.errors.email }" required
-                placeholder="Correo Electrónico" />
-            <jet-input-error :message="form.errors.email" />
+            <FormField label="Porcentaje:" :error="form.errors.percentage">
+                <FormControl v-model="form.percentage" :options="percentages" />
+            </FormField>
         </div>
-       
     </div>
-    
-    <table>
+    <table class="mb-5">
         <thead>
             <tr>
                 <th />
@@ -123,7 +140,7 @@ export default {
                 <td data-label="Descripción">
                     {{ item.description }}
                 </td>
-                <td data-label="estatus">
+                <td data-label="Estatus">
                     <label class="relative inline-flex items-center mb-5 cursor-pointer" :for="`chk${item.id}`">
                         <input type="checkbox" class="sr-only peer" v-model="form.profiles"
                             :value="{ id: item.id, name: item.name }" :id="`chk${item.id}`"
@@ -138,4 +155,9 @@ export default {
             </tr>
         </tbody>
     </table>
+    <FormField label="Foto de perfil:" :error="formPhoto.errors.photo"
+        help="Selecciona una foto de tus archivos JPG, PNG(MAX. 6M)">
+        <jet-input class="w-full border border-slate-800" aria-describedby="file_input_help" id="photo" type="file"
+            @input="formPhoto.photo = $event.target.files[0]" />
+    </FormField>
 </template>
