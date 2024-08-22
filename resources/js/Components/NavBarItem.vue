@@ -9,6 +9,7 @@ import BaseIcon from "@/components/BaseIcon.vue";
 import UserAvatarCurrentUser from "@/components/UserAvatarCurrentUser.vue";
 import NavBarMenuList from "@/components/NavBarMenuList.vue";
 import BaseDivider from "@/components/BaseDivider.vue";
+import axios from "axios";
 
 const props = defineProps({
   item: {
@@ -18,6 +19,21 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["menu-click"]);
+const numberNotis = ref(null)
+const fungllo = () => {
+  axios
+    .get(route("notifications.unreadCount"))
+    .then((response) => {
+      const NotificationCount = response.data.unread_count;
+      numberNotis.value= NotificationCount
+    })
+    .catch((error) => {
+      console.error(
+        "Error al cargar el recuento de notificaciones no leídas:",
+        error
+      );
+    });
+};
 
 const itemHref = computed(() =>
   props.item.route ? route(props.item.route) : props.item.href
@@ -54,7 +70,9 @@ const componentClass = computed(() => {
 
 const itemLabel = computed(() => {
   if (props.item.isCurrentUser) {
-    return usePage().props.auth.user.name;
+    const currentUser = usePage().props.auth.user;
+    const nombreCompleto = `${currentUser.name} ${currentUser.apellido_paterno} ${currentUser.apellido_materno}`;
+    return nombreCompleto;
   } else if (props.item.isRol) {
     const roles = usePage().props.auth.user.roles;
     if (roles.length > 0) {
@@ -90,6 +108,7 @@ const forceClose = (event) => {
 };
 
 onMounted(() => {
+  fungllo();
   if (props.item.menu) {
     window.addEventListener("click", forceClose);
   }
@@ -122,16 +141,13 @@ onBeforeUnmount(() => {
           item.menu,
       }"
     >
-      <UserAvatarCurrentUser
-        v-if="item.isCurrentUser"
-        class="w-10 h-10 mr-3 inline-flex"
-      />
       <BaseIcon v-if="item.icon" :path="item.icon" class="transition-colors" />
       <span
         class="px-2 transition-colors"
         :class="{ 'lg:hidden': item.isDesktopNoLabel && item.icon }"
         >{{ itemLabel }}</span
       >
+      <span v-if="item.isNotification === true">{{ numberNotis }}</span>
       <BaseIcon
         v-if="item.menu"
         :path="isDropdownActive ? mdiChevronUp : mdiChevronDown"
@@ -140,10 +156,15 @@ onBeforeUnmount(() => {
     </div>
     <div
       v-if="item.menu"
-      class="text-sm border-b border-gray-100 lg:border lg:bg-white lg:absolute lg:top-full lg:left-0 lg:min-w-full lg:z-20 lg:rounded-lg lg:shadow-lg lg:dark:bg-slate-800 dark:border-slate-700"
+      class="text-black text-sm  lg:bg-purple-900  lg:absolute lg:top-full lg:left-0 lg:min-w-full lg:z-20  lg:shadow-lg lg:dark:bg-slate-800 dark:border-slate-700"
       :class="{ 'lg:hidden': !isDropdownActive }"
     >
       <NavBarMenuList :menu="item.menu" @menu-click="menuClickDropdown" />
     </div>
   </component>
 </template>
+<style>
+  .text-yellow-500 {
+    color: #FFD700; /* Amarillo */
+  }
+</style>

@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, computed, onMounted } from "vue";
+import { Bar } from 'vue-chartjs';
 import {
   Chart,
   LineElement,
@@ -7,7 +8,8 @@ import {
   LineController,
   LinearScale,
   CategoryScale,
-  Tooltip,
+  Tooltip,  
+  
 } from "chart.js";
 
 const props = defineProps({
@@ -32,7 +34,7 @@ Chart.register(
 
 onMounted(() => {
   chart = new Chart(root.value, {
-    type: "line",
+    type: "bar  ",
     data: props.data,
     options: {
       responsive: true,

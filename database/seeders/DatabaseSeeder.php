@@ -22,11 +22,15 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            AgencySeeder::class,
-            UserSeeder::class,
-            ModuleSeeder::class,
+            RoleSeeder::class,
             PermisosSeeder::class,
             AdminSeeder::class,
+            MateriaSeeder::class,
+            PreguntaSeeder::class,
+            PeriodoSeeder::class,
+           
+            GrupoSeeder::class,
+           
         ]);
     }
 }

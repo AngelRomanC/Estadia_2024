@@ -10,83 +10,42 @@ import {
   mdiThemeLightDark,
   mdiGithub,
   mdiReact,
+  mdiBell,
 } from "@mdi/js";
 
+import { usePage } from "@inertiajs/vue3";
+import { colorsText } from "./colors";
+
+
 export default [
-  {
-    // icon: mdiMenu,
-    // label: "Sample menu",
-    // menu: [
-    //   {
-    //     icon: mdiClockOutline,
-    //     label: "Item One",
-    //   },
-    //   {
-    //     icon: mdiCloud,
-    //     label: "Item Two",
-    //   },
-    //   {
-    //     isDivider: true,
-    //   },
-    //   {
-    //     icon: mdiCrop,
-    //     label: "Item Last",
-    //   },
-    // ],
-
-    icon: mdiAccount,
-    isRol: true,
-
+  { href: "/notificaciones",
+  icon: mdiBell,
+  label: "Notificaciones",
+  isDesktopNoLabel: true,
+  isNotification: true,
   },
   {
+    
     isCurrentUser: true,
     menu: [
       {
+        href:"/perfil",
         icon: mdiAccount,
         label: "Mi perfil",
-        href: "/profile",
+        to: "/profile",
+        
       },
-      // {
-      //   icon: mdiCogOutline,
-      //   label: "Settings",
-      // },
-      {
-        icon: mdiEmail,
-        label: "Notificaciones",
-      },
-      {
-        isDivider: true,
-      },
-      {
-        icon: mdiLogout,
-        label: "Cerrar sesión",
-        isLogout: true,
-      },
+      
+    
     ],
   },
   {
-    icon: mdiThemeLightDark,
-    label: "Light/Dark",
-    isDesktopNoLabel: true,
-    isToggleLightDark: true,
+    icon: mdiAccount,
+    isRol: true,
   },
-  // {
-  //   icon: mdiGithub,
-  //   label: "GitHub",
-  //   isDesktopNoLabel: true,
-  //   href: "https://github.com/justboil/admin-one-vue-tailwind",
-  //   target: "_blank",
-  // },
-  // {
-  //   icon: mdiReact,
-  //   label: "React version",
-  //   isDesktopNoLabel: true,
-  //   href: "https://github.com/justboil/admin-one-react-tailwind",
-  //   target: "_blank",
-  // },
   {
     icon: mdiLogout,
-    label: "Cerrar Sesión",
+    label: "Log out",
     isDesktopNoLabel: true,
     isLogout: true,
   },

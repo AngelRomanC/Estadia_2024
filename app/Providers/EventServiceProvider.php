@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\RecursamientoEvent;
+use App\Events\RecursamientoEvent2;
+use App\Listeners\RecursamientoListener;
+use App\Listeners\RecursamientoListener2;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -17,6 +21,12 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        RecursamientoEvent::class=>[
+            RecursamientoListener::class,
+        ],
+        RecursamientoEvent2::class=>[
+            RecursamientoListener2::class,
         ],
     ];
 

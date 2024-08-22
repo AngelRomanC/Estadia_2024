@@ -2,145 +2,198 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ImageRequest;
+use App\Models\Usuario;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use Illuminate\Http\Request;
-use App\Models\Module;
+use App\Http\Requests\UpdateUsuarioRequest;
+
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use App\Models\User;
+use App\Models\Alumno;
+use App\Models\Profesor;
+use App\Models\Modulo;
+use App\Notifications\CredencialesEstudianteNotification;
+
+use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+
 
 class UserController extends Controller
 {
     protected string $routeName;
     protected string $source;
-    protected string $module = 'user';
+    protected string $module = 'usuarios';
     protected User $model;
-    private string $storage_path = 'public/photos';
+
     public function __construct()
     {
-        $this->routeName = "user.";
-        $this->source    = "Security/Users/";
+        $this->routeName = "usuarios.";
+        $this->source    = "Seguridad/Usuarios/";
         $this->model     = new User();
-        $this->middleware("permission:{$this->module}.index")->only(['index', 'show']);
-        $this->middleware("permission:{$this->module}.store")->only(['store', 'create']);
-        $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);
-        $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
+        // $this->middleware("permission:{$this->module}.index")->only(['index', 'show']);
+        // $this->middleware("permission:{$this->module}.store")->only(['store', 'create']);
+        // $this->middleware("permission:{$this->module}.update")->only(['edit', 'update']);
+        // $this->middleware("permission:{$this->module}.delete")->only(['destroy']);
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request): Response
     {
-        $request->validate(['search' => 'nullable']);
 
-        $users = $this->model::filtro($request->all('search', 'profile'))
-            ->with('roles')
+        $alumnos = Alumno::with('user')->get();
+        $profesores = Profesor::with('user')->get();
+        $admin = User::where('role', 'Admin')->get();
+
+        $usuarios = $this->model::with('roles')
             ->orderBy('id')
-            ->paginate(10)
+            ->paginate(30)
             ->withQueryString();
 
+
+
         return Inertia::render("{$this->source}Index", [
-            'title'   => 'Gestión de Usuarios',
-            'users' => $users,
+            'titulo'   => ' Usuarios',
+            'usuarios' => $usuarios,
+            'alumnos' => $alumnos,
+            'admin' => $admin,
+            'profesores' => $profesores,
             'profiles' => Role::get(['id', 'name']),
             'routeName' => $this->routeName,
             'loadingResults' => false,
-            'filtro' => $request->all('search', 'profile'),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return Inertia::render("{$this->source}Create", [
-            'title' => 'Agregar Usuarios',
-            'routeName' => $this->routeName,
-            'profiles' => Role::with('permissions:id,name,description,module_key')->orderBy('name')->select('id', 'name', 'description')->get(),
-            'permisos' => Permission::get(['id', 'name', 'description', 'module_key'])->groupBy('module_key')->toArray(),
-            'modulos' => Module::orderBy('key')->get(['id', 'name', 'description', 'key'])
+        return Inertia::render("Seguridad/Usuarios/Create", [
+            'titulo'      => 'Agregar Usuarios',
+            'routeName'      => $this->routeName,
+            'roles' => Role::pluck('name'),
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreUserRequest $request)
+
     {
-        $fields = $request->validated();
-        if ($request->hasFile('photo')) {
-            $request->validate([
-                'photo' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+        
+        $newUser = user::create([
+            'name' => $request->input('name'),
+            'apellido_paterno' => $request->input('apellido_paterno'),
+            'apellido_materno' => $request->input('apellido_materno'),
+            'numero' => $request->input('numero'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+            'role' => $request->input('role'),
+
+
+        ])->assignRole($request['role']);
+
+        $newUser->notify(new CredencialesEstudianteNotification($request->email, $request->password));
+
+        return redirect()->route("usuarios.index")->with('message', 'materia generado con éxito');
+    }
+
+
+    public function perfil()
+    {
+        
+        $usuario = Auth::user();
+
+        $alumno = Alumno::where('user_id', $usuario->id)->first();
+        $profesor = Profesor::where('user_id', $usuario->id)->first();
+        return Inertia::render("Seguridad/Usuarios/Perfil", [
+            'titulo'   => 'Modificar Perfil',
+            'usuario'  => $usuario,
+            'alumno'    => $alumno,
+            'profesor'  => $profesor,
+            'routeName'=> $this->routeName,
+        ]);
+    }
+    public function updateperfil(Request $request)
+    {
+        
+       //dd($request->alumno);
+       $usuario = User::find($request->id);
+       $usuario->update($request->all());
+    
+       // Obtén el alumno relacionado con este usuario
+       $alumno = Alumno::where('user_id', $request->id)->first();
+       $profesor = Profesor::where('user_id', $request->id)->first();
+       if ($alumno) {
+       
+        $alumno->update([
+            'cuatrimestre' => $request->alumno['cuatrimestre'],
+            'matricula'    => $request->alumno['matricula'],
+           
+        ]);}
+
+        if ($profesor) {
+          
+            $profesor->update([
+                'area' => $request->profesor['area'],
+                'grado_academico'    => $request->profesor['grado_academico'],
+              
             ]);
-            $fileStorage = $request->file('photo');
-            $fileName = $fileStorage->getClientOriginalName();
-            $fileStorage->storeAs($this->storage_path, $fileName);
-            $fields['photo'] = $fileName;
         }
-        $fields['password'] = Hash::make($fields['password']);
-        $user = $this->model::create($fields);
-        $roles = Role::whereIn('id', $request->profiles)->get();
-        $user->syncRoles($roles);
-        return redirect()->route('user.index')->with('success', 'Usuario creado con éxito');
+        return redirect()->route("usuarios.perfil")->with('success', 'Perfil actualizado');
+
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        abort(405);
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
+
+    public function edit($id)
     {
-        return Inertia::render("{$this->source}Edit", [
-            'title'    => 'Editar Usuarios.',
+
+        $usuario = User::find($id);
+
+        return Inertia::render("Seguridad/Usuarios/Edit", [
+            'titulo'   => 'Modificar Usuario',
+            'usuario'  => $usuario,
             'routeName' => $this->routeName,
-            'record' => $user->load('roles:id,name', 'permissions:id,name'),
-            'profiles' => Role::with('permissions:id,name,description,module_key')->orderBy('name')->select('id', 'name', 'description')->get(),
-            'permissions' => Permission::get(['id', 'name', 'description', 'module_key'])->groupBy('module_key')->toArray(),
-            'modules' => Module::orderBy('key')->get(['id', 'name', 'description', 'key'])
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, $id)
     {
-        $user->update($request->validated());
-        $roles = Role::whereIn('id', $request->profiles)->get();
-        $user->syncRoles($roles);
-        return redirect()->route('user.index')->with('success', 'Usuario modificado con éxito');
+        $usuario = User::find($id);
+
+        if (!$usuario) {
+            abort(404, 'Usuario no encontrado');
+        }
+
+        // Actualiza los datos del usuario
+        $usuario->update($request->all());
+
+        // Obtén el alumno relacionado con este usuario
+        $alumno = Alumno::where('user_id', $usuario->id)->first();
+
+        if ($alumno) {
+            // Actualiza los datos del alumno si existe
+            $alumno->update([
+                'cuatrimestre' => $request->input('cuatrimestre'),
+                'matricula'    => $request->input('matricula'),
+                // Otros campos del alumno
+            ]);
+        }
+
+        return redirect()->route("usuarios.index")->with('message', 'Usuario y alumno actualizados correctamente!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        $user->delete();
-        return redirect()->route('user.index')->with('success', 'Usuario eliminado con éxito');
-    }
 
-    public function editPhoto(ImageRequest $request)
-    {
-        $fileStorage = $request->file('photo');
-        $fileName = $fileStorage->getClientOriginalName();
-        $fileStorage->storeAs($this->storage_path, $fileName);
 
-        return response([$fileName], 200);
+    public function destroy($id)
+    {
+
+        $usuario = User::find($id);
+        $usuario->delete();
+
+
+
+        return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado con éxito');
     }
 }

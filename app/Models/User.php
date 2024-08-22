@@ -30,13 +30,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'apellido_paterno',
+        'apellido_materno',
+        'numero',
         'email',
         'password',
-        'agency_id',
-        'status',
-        'phone_number',
-        'percentage',
-        'photo'
+        'role',
     ];
 
     /**
@@ -103,9 +102,29 @@ class User extends Authenticatable
             return [$permission['name'] => true];
         });
     }
-
-    public function agency()
+    public function alumno()
     {
-        return $this->belongsTo(Agency::class);
+        return $this->hasOne(Alumno::class);
     }
+    public function profesor()
+    {
+        return $this->hasOne(Profesor::class);
+    }
+    public function academico()
+    {
+        return $this->hasOne(Academico::class);
+    }
+    public function habito()
+    {
+        return $this->hasOne(Habito::class);
+    }
+    public function inteligencia()
+    {
+        return $this->hasOne(Inteligencia::class);
+    }
+    public function grupoAlumnos()
+    {
+        return $this->hasMany(Grupo_Alumnos::class);
+    }
+    
 }

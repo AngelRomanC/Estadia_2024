@@ -21,6 +21,11 @@ module.exports = {
       gray: "gray",
     },
     extend: {
+      colors: {
+        customYellow: '#FBB034',
+        customRed: '#FF0000',
+        customPurple: '#4F1F91',
+      },
       zIndex: {
         "-1": "-1",
       },

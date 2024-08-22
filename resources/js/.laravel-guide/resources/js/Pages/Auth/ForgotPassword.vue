@@ -51,9 +51,8 @@ const submit = () => {
         </NotificationBarInCard>
 
         <FormField>
-          <div class="mb-4 text-sm text-gray-600">
-            Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.
-          </div>
+          <div class="mb-4 text-sm text-gray-700">
+            ¿Olvidaste tu contraseña? Ningún problema. Simplemente háganos saber su dirección de correo electrónico y le enviaremos un enlace para restablecer su contraseña que le permitirá elegir una nueva.          </div>
         </FormField>
 
         <FormField

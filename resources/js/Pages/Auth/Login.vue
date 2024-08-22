@@ -7,7 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3'; */
 import { useForm, Head, Link } from '@inertiajs/vue3'
-import { mdiAccount, mdiAsterisk } from '@mdi/js'
+import { mdiAccount, mdiAsterisk,mdiAccountCircleOutline,mdiKey } from '@mdi/js'
 import LayoutGuest from '@/layouts/LayoutGuest.vue'
 import SectionFullScreen from '@/components/SectionFullScreen.vue'
 import CardBox from '@/components/CardBox.vue'
@@ -74,11 +74,13 @@ const submit = () => {
     <SectionFullScreen
       v-slot="{ cardClass }"
       bg="purplePink"
+
     >
       <CardBox
         :class="cardClass"
         is-form
         @submit.prevent="submit"
+
       >
         <FormValidationErrors />
 
@@ -88,15 +90,22 @@ const submit = () => {
         >
           {{ status }}
         </NotificationBarInCard>
+       
+        <img src="http://sw_estadia.test:8080/storage/imagenes/upemor.jpg" style="width: 200px; height: auto;display: block; margin: 0 auto;">
 
+      
+      
+    
         <FormField
-          label="Email"
-          label-for="email"
-          help="Porfavor introduce tu eamil"
-        >
+        label="Usuario:     "
+        label-for="email"
+        help="Porfavor introduce tu email"
+        className="text-center"
+        
+      >
           <FormControl
             v-model="form.email"
-            :icon="mdiAccount"
+            :icon="mdiAccountCircleOutline"
             id="email"
             autocomplete="email"
             type="email"
@@ -105,13 +114,14 @@ const submit = () => {
         </FormField>
 
         <FormField
-          label="Contraseña"
+          label="Contraseña:"
           label-for="Contraseña"
           help="Porfavor introduce tu contraseña"
+          className="text-center"
         >
           <FormControl
             v-model="form.password"
-            :icon="mdiAsterisk"
+            :icon="mdiKey"
             type="password"
             id="password"
             autocomplete="current-password"
@@ -119,36 +129,32 @@ const submit = () => {
           />
         </FormField>
 
-        <FormCheckRadioGroup
-          v-model="form.remember"
-          name="remember"
-          :options="{ remember: 'Recordar' }"
-        />
+      
 
         <BaseDivider />
 
         <BaseLevel>
-          <BaseButtons>
-            <BaseButton
-              type="submit"
-              color="info"
-              label="Iniciar sesion"
-              :class="{ 'opacity-25': form.processing }"
-              :disabled="form.processing"
-            />
-            <BaseButton
-              v-if="canResetPassword"
-              route-name="password.request"
-              color="info"
-              outline
-              label="Olvidaste tu contraseña?"
-            />
-          </BaseButtons>
-          <Link
-            :href="route('register')"
-          >
-            Registrarse
-          </Link>
+          <div class="flex justify-center">
+            <BaseButtons>
+                <BaseButton
+                    type="submit"
+                    class="bg-purple-600 hover:bg-purple-600 py-2 px-4 rounded"
+                    label="Iniciar sesión"
+                    :class="{ 'opacity-25': form.processing }"
+                    :disabled="form.processing"
+                />
+                <BaseButton
+                    v-if="canResetPassword"
+                    route-name="password.request"
+                    class="bg-red-600 hover:bg-red-600 py-2 px-4 rounded"
+                    outline
+                    label="Olvidaste tu contraseña?"
+                />
+            </BaseButtons>
+        </div>
+        
+          
+          
         </BaseLevel>
       </CardBox>
     </SectionFullScreen>

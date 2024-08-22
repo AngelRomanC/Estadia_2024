@@ -1,17 +1,17 @@
 <script setup>
 
 import SectionMain from "@/Components/SectionMain.vue";
-import LayoutAuthenticated from "@/Layouts/LayoutAuthenticated.vue";
+import LayoutDashboard from "@/Layouts/LayoutDashboard.vue";
 
 
 </script>
 
 <template>
-    <LayoutAuthenticated>
+    <LayoutDashboard>
 
         <SectionMain>
             <slot />
 
         </SectionMain>
-    </LayoutAuthenticated>
+    </LayoutDashboard>
 </template>

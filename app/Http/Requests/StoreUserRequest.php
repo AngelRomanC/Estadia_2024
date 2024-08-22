@@ -24,25 +24,24 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'apellido_paterno' => ['required', 'string', 'max:255'],
+            'apellido_materno' => ['required', 'string', 'max:255'],
+            'numero' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required'],
-            //'agency_id' => 'required|exists:agencies,id',
-            'agency_id' => 'required',
-            'status'      => 'required',
-            'phone_number' => 'required|digits:10',
-            'percentage'   => 'max:255',
+            'password' => ['required']
         ];
     }
-    public function attributes(): array
+
+    public function messages()
     {
         return [
-            'name' => 'Nombre',
-            'email' => 'Correo electrónico',
-            'password' => 'Contraseña',
-            'agency_id' => 'Agencia',
-            'status' => 'Estado',
-            'phone_number' => 'Telefono',
-            'percentage' => 'Porcentaje',
+            'name.required' => 'El campo nombre es obligatorio.',
+            'apellido_paterno.required' => 'El campo apellido paterno es obligatorio.',
+            'apellido_materno' => 'El campo apellido materno es obligatorio.',
+            'numero' => 'El campo Teléfono es obligatorio.',
+            'email' => 'El campo Correo Electronico es obligatorio.',
+            'password' => 'El campo contraseña  es obligatorio.',
+            'email.unique' => 'Este correo ya está en uso',
         ];
     }
 }

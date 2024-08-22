@@ -1,83 +1,174 @@
 import {
   mdiAccountCircle,
   mdiMonitor,
-  mdiDomain,
-  mdiHandshakeOutline,
-  mdiShieldCrown,
+  mdiGithub,
+  mdiLock,
+  mdiAlertCircle,
   mdiSquareEditOutline,
-  mdiViewList,
+  mdiTable,
+  mdiViewListOutline,
   mdiTelevisionGuide,
   mdiResponsive,
-  mdiPalette,
-  mdiReact,
-  mdiViewModule,
-  mdiLockCheckOutline,
-  mdiLockOutline,
-  mdiAccountSupervisor,
+  mdiSecurity,
+  mdiClockCheck,
+  mdiBookshelf,
+  mdiCalendarAccountOutline,
+  mdiClockTimeEleven,
   mdiAccount,
-  mdiSchool,
-  mdiTree,
-  mdiLightbulbOutline,
-  mdiRocket,
-  mdiLightbulbOnOutline,
-  mdiBook,
-  mdiTheater,
+  mdiBedClock,
+  mdiEmoticonHappyOutline ,
+  mdiFileDocumentEditOutline,mdiHumanMaleBoard,mdiAccountSchool
 
 } from "@mdi/js";
-// import Icon from '@mdi/react';
+
 
 
 export default [
   {
     href: "/dashboard",
-    icon: mdiMonitor,
-    label: "Inicio",
     to: "/dashboard",
-    //role: "",
+    icon: mdiMonitor,
+    label: "Dashboard",
+    role: "Admin"
   },
+
+  
   {
-    href: "/profile",
-    label: "Perfil",
-    icon: mdiAccountCircle,
-  },
-  {
-    label: "Seguridad",
-    icon: mdiViewList,
+    label: "Catalogo",
+    icon: mdiViewListOutline,
     role: "Admin",
-    permission: 'modulo.seguridad',
     menu: [
+ 
       {
-        label: "Modulos",
-        href: "/module",
-        icon: mdiViewModule,
-        permission: 'module.index',
+        label: "Materias",
+        href: "/materia",
+        to: "/materia",
+        
+        icon: mdiBookshelf,
       },
       {
-        label: "Permisos",
-        href: "/permissions",
-        icon: mdiLockCheckOutline,
-        permission: 'permissions.index',
-      },
-      {
-        label: "Roles",
-        href: "/perfiles",
-        icon: mdiAccountSupervisor,
-        permission: 'perfiles.index',
-      },
-      {
-        label: "Usuarios",
-        href: "/user",
-        icon: mdiAccount,
-        permission: 'user.index',
+        label: "Periodo",
+        href: "/periodo",
+        icon: mdiBookshelf,
+       
       },
     ],
   },
+
+
   {
-    isDivider: true,
+    href:"/grupo",
+    label: "Grupos",
+    icon: mdiBookshelf,
+    role: "Admin",
+  }, 
+  {
+    label: "Usuarios",
+    icon: mdiFileDocumentEditOutline ,
+    role: "Admin",
+    menu: [
+      {
+        href:"/usuarios",
+        label: "Admin",
+        icon: mdiSecurity,
+        role: "Admin",
+      }, 
+      {
+        href:"/profesor",
+        label: "Profesor",
+        icon: mdiHumanMaleBoard,
+        role: "Admin",
+      }, 
+      {
+        href:"/alumno",
+        label: "Alumno",
+        icon: mdiAccountSchool  ,
+        role: "Admin",
+      }, 
+      
+    ]
+  },
+
+  
+  {
+    href:"/recursamiento",
+    label: "Recursamiento",
+    icon: mdiBookshelf,
+    role: "Admin",
+  }, 
+  {
+    href:"/lista",
+    label: "Recursamientos disponibles",
+    icon: mdiBookshelf,
+    role: "Alumno",
+  }, 
+  {
+    label: "Formatos",
+    icon: mdiFileDocumentEditOutline ,
+    role: "Alumno",
+    menu: [
+      {
+        href:"/academico",
+        label: "Academico",
+        icon: mdiBookshelf,
+        role: "Alumno",
+      }, 
+      {
+        href:"/habito",
+        label: "Habitos",
+        icon: mdiBedClock,
+        role: "Alumno",
+      }, 
+      {
+        href:"/inteligencia",
+        label: "Inteligencia",
+        icon: mdiEmoticonHappyOutline ,
+        role: "Alumno",
+      }, 
+      {
+        href:"/encuesta",
+        label: "Encuesta recursamientos",
+        icon: mdiBookshelf,
+        role: "Alumno",
+      }, 
+    ]
   },
   {
-    href: "/agency",
-    label: "Agencias",
-    icon: mdiAccountCircle,
-  },
+    href:"/evaluacion",
+    label: "Evaluación",
+    icon: mdiBookshelf,
+    role: "Tutor",
+  }, 
+  {
+    href:"/grupoAlumnos",
+    label: "Grupo",
+    icon: mdiBookshelf,
+    role: "Tutor",
+  }, 
+  {
+    href:"/pregunta",
+    label: "Formatos",
+    icon: mdiBookshelf,
+    role: "Admin",
+  }, 
+  {
+    href:"/observaciones",
+    label: "Observaciones",
+    icon: mdiBookshelf,
+    role: "Alumno",
+    
+  }, 
+  {
+    href:"/respaldo",
+    label: "Respaldo",
+    icon: mdiBookshelf,
+    role: "Admin",
+  }, 
+  {
+    href:"/report/vista",
+    label: "Reportes",
+    icon: mdiBookshelf,
+    role: "Admin",
+  }, 
+
 ];
